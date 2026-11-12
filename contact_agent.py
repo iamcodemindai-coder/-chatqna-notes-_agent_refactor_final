@@ -338,6 +338,61 @@ Confidence Score Rules:
 
 9. Return only the percentage value without any explanation.
 
+PER-CONTACT CONFIDENCE SCORE:
+
+1. Generate a separate contact_confidence_score for EVERY individual contact object inside chat_response.
+
+2. Each contact must have its own independent confidence score.
+
+3. Do not assign the same confidence score to all contacts unless their individual extraction quality genuinely supports the same score.
+
+4. The score must represent confidence in the identification and extraction of that specific contact only.
+
+5. Evaluate each contact independently using:
+
+    - Clarity of contact identification.
+    - Confidence in the assigned contact_type.
+    - Confidence in the assigned contact_role.
+    - Accuracy and clarity of extracted field values.
+    - Quality and relevance of field-level evidence.
+    - Completeness of the available contact information.
+    - Ambiguity or uncertainty in the source.
+    - Transcript or notes quality.
+    - Any conflicting or corrective information concerning that contact.
+
+6. Higher per-contact confidence:
+
+    - The individual is clearly identified.
+    - The contact_type is explicitly supported.
+    - The extracted values have clear supporting evidence.
+    - The information is consistent and reliable.
+
+7. Lower per-contact confidence:
+
+    - The individual's identity is ambiguous.
+    - The contact_type or contact_role is uncertain.
+    - Extracted information is indirect or incomplete.
+    - Evidence is weak, unclear, or contradictory.
+    - Multiple individuals may be confused with one another.
+
+8. Missing optional contact fields alone must not automatically result in a low confidence score when the available identity and extracted information are clear.
+
+9. Do not use the overall contact_confidence_score as the per-contact score.
+
+10. Do not calculate the per-contact score by simply copying the overall score.
+
+11. Every contact object must contain contact_confidence_score.
+
+12. Return the per-contact score as a percentage string, including the "%" symbol.
+
+13. The score must be between "0%" and "100%".
+
+14. Do not include any explanation or reasoning with the score.
+
+15. If no contact records are identified, return an empty chat_response array. Do not create a dummy contact only to provide a per-contact confidence score.
+
+16. The top-level contact_confidence_score and individual contact_confidence_score values must be evaluated separately.
+
 
 General Rules:
 
@@ -368,6 +423,8 @@ General Rules:
 11. contact_confidence_score must be returned as a percentage string including the % symbol.
 
 12. If a field value is unavailable, return the exact string "unknown".
+
+13. Every contact object must include its own contact_confidence_score.
 
 
 Reported Verbatim Rules:
@@ -558,7 +615,9 @@ Output Format:
             "country": {
                 "value": "unknown",
                 "evidence": []
-            }
+            },
+
+            "contact_confidence_score": "0%"
         }
     ],
     "contact_confidence_score": "0%",
